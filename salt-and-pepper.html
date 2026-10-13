@@ -1,0 +1,483 @@
+<title>Salt and Pepper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: warm hero with a giant spinning paella cut off at the right edge, then a menu grid, a meal-prep band, an order form and contact. */
+:root{
+  --saffron:#ff9835; --apricot:#faa668; --chili:#f52019; --tomato:#ff533a; --coral:#f57254;
+  --bg:#fff8f1; --surface:#ffffff; --ink:#2b1610; --muted:#7a5546; --line:#f1dccd; --tint:#ffeedd;
+  --on-accent:#ffffff;
+  --display:"Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1c110d; --surface:#271813; --ink:#fbeee4; --muted:#d0a993; --line:#3d271e; --tint:#2f1d16; color-scheme:dark } }
+:root[data-theme="dark"]{ --bg:#1c110d; --surface:#271813; --ink:#fbeee4; --muted:#d0a993; --line:#3d271e; --tint:#2f1d16; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;overflow-x:hidden}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px}
+h1,h2,h3{font-family:var(--display);line-height:1.02;margin:0;text-wrap:balance}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;border-radius:6px}
+
+/* nav */
+nav{position:relative;z-index:3}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px}
+.logo{font-family:var(--display);font-weight:800;font-size:1.35rem;letter-spacing:-.02em;display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo i{display:inline-flex;gap:3px}
+.logo i b{width:10px;height:22px;border-radius:5px 5px 3px 3px;background:var(--chili)}
+.logo i b:last-child{background:var(--ink)}
+.navlinks{display:flex;gap:18px;font-weight:600;font-size:.95rem}
+.navlinks a{text-decoration:none}
+.navlinks a:hover{color:var(--chili)}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding-block:40px 90px}
+.hero-text{position:relative;z-index:2;max-width:560px}
+.eyebrow{display:inline-block;font-weight:600;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--chili);margin-bottom:18px}
+.hero h1{font-size:clamp(3rem,9vw,6.4rem);font-weight:800;letter-spacing:-.04em}
+.hero h1 em{font-style:normal;color:var(--chili)}
+.hero p{font-size:1.15rem;max-width:44ch;color:var(--muted);margin:22px 0 30px}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;font:600 1rem var(--body);padding:14px 24px;border-radius:999px;text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--chili);color:var(--on-accent)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.facts{display:flex;flex-wrap:wrap;gap:22px;margin-top:38px;font-size:.92rem;color:var(--muted)}
+.facts strong{display:block;font-family:var(--display);font-size:1.5rem;color:var(--ink)}
+#paella{position:absolute;z-index:1;top:50%;right:0;width:760px;height:760px;transform:translate(48%,-50%);pointer-events:none}
+.hero::before{content:"";position:absolute;right:-180px;top:50%;width:900px;height:900px;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle,var(--tint) 0 55%,transparent 56%)}
+
+/* sections */
+section{padding-block:72px}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:34px}
+.head h2{font-size:clamp(2.2rem,5vw,3.4rem);letter-spacing:-.03em}
+.head p{max-width:42ch;color:var(--muted);margin:0}
+
+.menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.dish{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.dish canvas,.dish .photo{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--tint)}
+.dish .txt{padding:18px 20px 22px;display:flex;flex-direction:column;gap:6px;flex:1}
+.dish h3{font-size:1.35rem;letter-spacing:-.01em}
+.dish p{margin:0;color:var(--muted);font-size:.95rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:10px}
+.tag{font-size:.75rem;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--tint);color:var(--chili)}
+.dish button{margin-top:12px;align-self:flex-start;background:none;border:0;padding:0;font:600 .95rem var(--body);color:var(--chili);cursor:pointer}
+.dish button:hover{text-decoration:underline}
+
+/* meal prep band */
+.prep{background:var(--chili);color:var(--on-accent);border-radius:32px;padding:56px clamp(22px,5vw,64px);display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;position:relative;overflow:hidden}
+.prep h2{font-size:clamp(2.4rem,5.5vw,4rem);letter-spacing:-.035em}
+.prep p{font-size:1.1rem;opacity:.92;max-width:40ch}
+.week{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.day{background:rgba(255,255,255,.14);border-radius:16px;padding:12px 8px;text-align:center;min-width:0}
+.day b{display:block;font-family:var(--display);font-size:1rem;margin-bottom:8px}
+.box{height:34px;border-radius:8px;margin-top:6px;background:var(--saffron)}
+.box.b2{background:var(--apricot)}.box.b3{background:var(--coral)}
+.steps{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:10px}
+.steps li{display:flex;gap:12px;align-items:baseline}
+.steps span{font-family:var(--display);font-weight:800;min-width:1.4em}
+.prep .btn{background:var(--surface);color:var(--chili);margin-top:26px}
+
+/* form */
+form{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:26px}
+.card h3{font-size:1.25rem;margin-bottom:16px}
+.rows{display:grid;gap:4px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row span{font-weight:500}
+.step{display:flex;align-items:center;gap:6px}
+.step button{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-size:1.1rem;cursor:pointer;line-height:1}
+.step button:hover{border-color:var(--chili);color:var(--chili)}
+.step output{width:2ch;text-align:center;font-variant-numeric:tabular-nums;font-weight:600}
+.row.on span{color:var(--chili)}
+.fields{display:grid;gap:14px}
+label{display:grid;gap:6px;font-size:.88rem;font-weight:600}
+input,select,textarea{font:inherit;font-weight:400;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--saffron);outline:none}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg label{display:flex;align-items:center;gap:8px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600}
+.seg input{width:auto;accent-color:var(--chili)}
+.days{display:flex;flex-wrap:wrap;gap:6px}
+.days label{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px solid var(--line);border-radius:999px;font-weight:500;cursor:pointer}
+.days input{width:auto;accent-color:var(--chili)}
+.total{display:flex;justify-content:space-between;font-weight:600;margin-top:14px;padding-top:14px;border-top:2px dashed var(--line)}
+.err{color:var(--chili);font-size:.9rem;margin:0}
+#sendStatus.ok{color:#2f8a3a}#sendStatus.err{font-size:1rem}
+.summary{grid-column:1/-1}
+.summary pre{white-space:pre-wrap;background:var(--tint);padding:18px;border-radius:14px;font-size:.92rem;margin:0 0 14px;font-family:var(--body)}
+
+/* contact */
+.contact{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.person{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px;display:flex;gap:18px;align-items:center}
+.avatar{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.4rem;color:var(--on-accent);background:var(--tomato)}
+.person:nth-child(2) .avatar{background:var(--saffron)}
+.person h3{font-size:1.4rem}
+.person p{margin:2px 0 0;color:var(--muted);word-break:break-word}
+.area{margin-top:22px;color:var(--muted)}
+footer{padding-block:34px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+
+@media (max-width:900px){
+  .menu{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .prep,form{grid-template-columns:1fr}
+  #paella{width:560px;height:560px}
+}
+@media (max-width:640px){
+  .navlinks{display:none}
+  .hero{padding-block:280px 60px}
+  #paella{top:0;width:480px;height:480px;transform:translate(42%,-40%)}
+  .hero::before{top:0;right:-200px;width:560px;height:560px;transform:translateY(-45%)}
+  .menu,.contact{grid-template-columns:1fr}
+  .week{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+  .day{padding:8px 4px}
+}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}}
+</style>
+
+<nav><div class="wrap">
+  <a class="logo" href="#top"><i><b></b><b></b></i>Salt and Pepper</a>
+  <div class="navlinks"><a href="#menu">Menu</a><a href="#mealprep">Meal prep</a><a href="#order">Order</a><a href="#contact">Contact</a></div>
+</div></nav>
+
+<header class="hero" id="top">
+  <canvas id="paella" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="hero-text">
+      <span class="eyebrow">Home-cooked delivery · Dublin</span>
+      <h1>Real food, <em>at your door.</em></h1>
+      <p>Paella, kabsa, mashawi, couscous and healthy bowls, cooked fresh by Manar and Hajar and delivered across Dublin.</p>
+      <div class="btns">
+        <a class="btn primary" href="#order">Request your meals</a>
+        <a class="btn ghost" href="#mealprep">We also meal prep your week</a>
+      </div>
+      <div class="facts">
+        <div><strong>9</strong>dishes cooked to order</div>
+        <div><strong>1–20</strong>portions per dish</div>
+        <div><strong>Mon–Fri</strong>weekly prep boxes</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="menu"><div class="wrap">
+  <div class="head">
+    <h2>What we cook</h2>
+    <p>Spanish classics and Middle Eastern home cooking. Tap “Add” on any dish and it goes straight into your order.</p>
+  </div>
+  <div class="menu" id="menuGrid"></div>
+</div></section>
+
+<section id="mealprep"><div class="wrap">
+  <div class="prep">
+    <div>
+      <h2>We also meal prep your week.</h2>
+      <p>Tell us what you like and how many portions you need. We cook on Sunday and deliver labelled, ready-to-heat boxes for the days you choose.</p>
+      <ol class="steps">
+        <li><span>1</span>Pick your dishes and portions in the form below.</li>
+        <li><span>2</span>Choose your delivery days.</li>
+        <li><span>3</span>We confirm by phone or email and cook it fresh.</li>
+      </ol>
+      <a class="btn" href="#order" id="prepBtn">Plan my week</a>
+    </div>
+    <div class="week" aria-hidden="true">
+      <div class="day"><b>Mon</b><div class="box"></div><div class="box b2"></div></div>
+      <div class="day"><b>Tue</b><div class="box b3"></div><div class="box"></div></div>
+      <div class="day"><b>Wed</b><div class="box b2"></div><div class="box b3"></div></div>
+      <div class="day"><b>Thu</b><div class="box"></div><div class="box b2"></div></div>
+      <div class="day"><b>Fri</b><div class="box b3"></div><div class="box"></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="order"><div class="wrap">
+  <div class="head">
+    <h2>Request your meals</h2>
+    <p>Choose dishes and portions. We’ll get back to you to confirm the price, time and delivery.</p>
+  </div>
+  <form id="orderForm" novalidate>
+    <div class="card">
+      <h3>Dishes &amp; portions</h3>
+      <div class="rows" id="rows"></div>
+      <div class="total"><span>Total portions</span><span id="total">0</span></div>
+    </div>
+    <div class="card fields">
+      <h3>Your details</h3>
+      <div class="seg" role="radiogroup" aria-label="Type of order">
+        <label><input type="radio" name="kind" id="kindOnce" value="One-off delivery" checked> One-off delivery</label>
+        <label><input type="radio" name="kind" id="kindWeek" value="Weekly meal prep"> Weekly meal prep</label>
+      </div>
+      <div id="daysWrap" hidden>
+        <label style="margin-bottom:6px">Delivery days</label>
+        <div class="days" id="days"></div>
+      </div>
+      <label for="fName">Name<input id="fName" autocomplete="name" placeholder="Your name"></label>
+      <label for="fPhone">Phone<input id="fPhone" type="tel" autocomplete="tel" placeholder="08X XXX XXXX"></label>
+      <label for="fEmail">Email<input id="fEmail" type="email" autocomplete="email" placeholder="you@example.com"></label>
+      <label for="fAddr">Address in Dublin<input id="fAddr" autocomplete="street-address" placeholder="Street, area, Eircode"></label>
+      <label for="fDate">Preferred date<input id="fDate" type="date"></label>
+      <label for="fNotes">Notes<textarea id="fNotes" placeholder="Allergies, spice level, halal, no onion…"></textarea></label>
+      <p class="err" id="err" hidden></p>
+      <button class="btn primary" type="submit">Send request</button>
+    </div>
+    <div class="card summary" id="summary" hidden>
+      <h3>Your request</h3>
+      <p id="sendStatus" style="margin-top:0;font-weight:600" aria-live="polite"></p>
+      <pre id="summaryText"></pre>
+      <div class="btns"><button class="btn primary" type="button" id="copyBtn">Copy request</button><button class="btn ghost" type="button" id="editBtn">Edit</button></div>
+    </div>
+  </form>
+</div></section>
+
+<section id="contact"><div class="wrap">
+  <div class="head"><h2>Contact us</h2><p>Questions, catering for events or a custom weekly plan. Get in touch with either of us.</p></div>
+  <div class="contact">
+    <div class="person"><div class="avatar">ME</div><div><h3>Manar Eddib</h3><p>Co-founder &amp; cook</p><p>esdibmanar@gmail.com</p></div></div>
+    <div class="person"><div class="avatar">HA</div><div><h3>Hajar Anouar</h3><p>Co-founder &amp; cook</p></div></div>
+  </div>
+  <p class="area">Delivering across Dublin. Orders by request.</p>
+</div></section>
+
+<footer><div class="wrap"><span>© 2026 Salt and Pepper · Dublin</span><span>Home-cooked food delivery &amp; weekly meal prep</span></div></footer>
+
+<script>
+/* =====================================================================
+   CORREO DONDE LLEGAN LOS PEDIDOS (FormSubmit). Cambia el email si quieres.
+   Tras activarlo, puedes sustituir el email por el código alias que te da FormSubmit.
+   ===================================================================== */
+const ORDER_ENDPOINT="https://formsubmit.co/ajax/esdibmanar@gmail.com";
+
+/* =====================================================================
+   FOTOS DE LOS PLATOS — cambia el link de "photo" por el que quieras.
+   Si una foto no carga, se muestra automáticamente el dibujo del plato.
+   ===================================================================== */
+const DISHES=[
+ {id:"soup",name:"Vegetable soup",desc:"https://i.pinimg.com/1200x/54/23/fd/5423fd662340b407c525c78f93f15436.jpg,"["Vegan","Light"],
+  photo:"https://pngtree.com/freebackground/traditional-harira-soup-for-ramadan_15340778.html"},
+ {id:"paella",name:"Paella",desc:"Saffron rice with prawns, mussels, chicken and peppers. Made in the big pan.",tags:["Spanish","Signature"],
+  photo:"https://i.pinimg.com/1200x/7e/c6/a0/7ec6a0d329675b1cf4702e55b2f99054.jpg"},
+ {id:"chicken",name:"Arroz con pollo",desc:"Golden rice cooked with chicken, peas and red pepper.",tags:["Family favourite"],
+  photo:"https://i.pinimg.com/1200x/bb/6f/1d/bb6f1d0edcade4ba964134105b737a3b.jpg"},
+ {id:"burger",name:"Healthy grilled burger",desc:"Lean grilled patty with fresh salad, served with roasted sweet potato.",tags:["High protein","Healthy"],
+  photo:"https://i.pinimg.com/736x/09/ad/3a/09ad3a91d56d1ceebacaad04bfa901f5.jpg"},
+ {id:"kabsa",name:"Kabsa",desc:"Spiced Arabian rice with tender chicken, toasted almonds and raisins.",tags:["Arabic","Halal"],
+  photo:"https://loremflickr.com/800/600/kabsa?lock=2"},
+ {id:"couscous",name:"Couscous",desc:"Fluffy couscous with seven vegetables and chickpeas. Quick, done right.",tags:["Moroccan","Halal"],
+  photo:"https://loremflickr.com/800/600/couscous?lock=5"},
+ {id:"mashawi",name:"Grilled mashawi",desc:"Charcoal-style skewers of marinated meat, peppers and onion.",tags:["Grill","Halal"],
+  photo:"https://loremflickr.com/800/600/shishkebab?lock=4"},
+ {id:"hummus",name:"Hummus",desc:"Smooth chickpea and tahini dip with olive oil and paprika.",tags:["Vegan","Mezze"],
+  photo:"https://loremflickr.com/800/600/hummus?lock=8"},
+ {id:"tabbouleh",name:"Tabbouleh",desc:"Lebanese salad of parsley, tomato, mint, bulgur and lemon.",tags:["Vegan","Fresh"],
+  photo:"https://loremflickr.com/800/600/tabbouleh?lock=6"}
+];
+const C={sa:"#ff9835",ap:"#faa668",ch:"#f52019",to:"#ff533a",co:"#f57254"};
+
+/* seeded random */
+function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function blob(ctx,x,y,r,col,rot=0,sx=1,sy=1){ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.scale(sx,sy);ctx.beginPath();ctx.arc(0,0,r,0,7);ctx.fillStyle=col;ctx.fill();ctx.restore()}
+function inCircle(R,r){let a=R()*Math.PI*2,d=Math.sqrt(R())*r;return[Math.cos(a)*d,Math.sin(a)*d]}
+function grains(ctx,R,cx,cy,rad,n,cols,len){
+  for(let i=0;i<n;i++){const[x,y]=inCircle(R,rad);ctx.save();ctx.translate(cx+x,cy+y);ctx.rotate(R()*7);
+    ctx.beginPath();ctx.ellipse(0,0,len,len*.42,0,0,7);ctx.fillStyle=cols[(R()*cols.length)|0];ctx.fill();
+    ctx.fillStyle="rgba(255,255,255,.25)";ctx.beginPath();ctx.ellipse(-len*.2,-len*.12,len*.45,len*.14,0,0,7);ctx.fill();ctx.restore()}}
+function shadow(ctx,on){if(on){ctx.shadowColor="rgba(60,20,0,.35)";ctx.shadowBlur=6;ctx.shadowOffsetY=2}else{ctx.shadowColor="transparent";ctx.shadowBlur=0;ctx.shadowOffsetY=0}}
+
+function prawn(ctx,x,y,s,rot){
+  ctx.save();ctx.translate(x,y);ctx.rotate(rot);shadow(ctx,1);
+  for(let i=0;i<6;i++){const a=i*0.42,r=s*(1-i*.11);ctx.beginPath();
+    ctx.arc(Math.cos(a)*s*.9,Math.sin(a)*s*.9,r*.42,0,7);ctx.fillStyle=i%2?"#ff6a3d":"#ff8352";ctx.fill()}
+  shadow(ctx,0);ctx.strokeStyle="rgba(255,240,220,.7)";ctx.lineWidth=s*.06;
+  for(let i=0;i<5;i++){const a=i*0.42+.2;ctx.beginPath();ctx.arc(0,0,s*.9,a-.12,a+.05);ctx.stroke()}
+  ctx.fillStyle="#e2401f";ctx.beginPath();ctx.moveTo(Math.cos(2.4)*s*.9,Math.sin(2.4)*s*.9);
+  ctx.lineTo(Math.cos(2.4)*s*1.3-s*.2,Math.sin(2.4)*s*1.3+s*.3);ctx.lineTo(Math.cos(2.4)*s*.9+s*.3,Math.sin(2.4)*s*.9+s*.3);ctx.fill();
+  ctx.strokeStyle="#c0391b";ctx.lineWidth=s*.04;ctx.beginPath();ctx.moveTo(s*.9,0);ctx.quadraticCurveTo(s*1.6,-s*.6,s*2.1,-s*.2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(s*.9,0);ctx.quadraticCurveTo(s*1.7,-s*.2,s*2.2,s*.3);ctx.stroke();
+  blob(ctx,s*.95,-s*.15,s*.08,"#1a0d08");ctx.restore()}
+function mussel(ctx,x,y,s,rot){
+  ctx.save();ctx.translate(x,y);ctx.rotate(rot);shadow(ctx,1);
+  ctx.beginPath();ctx.ellipse(0,0,s,s*.55,0,0,7);const g=ctx.createLinearGradient(-s,0,s,0);g.addColorStop(0,"#1b1a26");g.addColorStop(.6,"#3a3550");g.addColorStop(1,"#14131c");ctx.fillStyle=g;ctx.fill();shadow(ctx,0);
+  ctx.beginPath();ctx.ellipse(s*.05,0,s*.72,s*.36,0,0,7);ctx.fillStyle="#f29a52";ctx.fill();
+  ctx.beginPath();ctx.ellipse(-s*.1,-s*.05,s*.4,s*.16,0,0,7);ctx.fillStyle="#ffc085";ctx.fill();
+  ctx.strokeStyle="rgba(255,255,255,.18)";ctx.lineWidth=s*.05;ctx.beginPath();ctx.ellipse(0,0,s*.93,s*.5,0,3.6,5.6);ctx.stroke();ctx.restore()}
+function lemon(ctx,x,y,s,rot){
+  ctx.save();ctx.translate(x,y);ctx.rotate(rot);shadow(ctx,1);
+  ctx.beginPath();ctx.moveTo(-s,0);ctx.quadraticCurveTo(0,-s*1.05,s,0);ctx.closePath();ctx.fillStyle="#f5d53b";ctx.fill();shadow(ctx,0);
+  ctx.beginPath();ctx.moveTo(-s*.82,-s*.04);ctx.quadraticCurveTo(0,-s*.86,s*.82,-s*.04);ctx.closePath();ctx.fillStyle="#fff2a6";ctx.fill();
+  ctx.strokeStyle="#f2d54a";ctx.lineWidth=s*.05;for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(0,-s*.02);ctx.lineTo(i*s*.32,-s*.55+Math.abs(i)*s*.12);ctx.stroke()}
+  ctx.restore()}
+function chickenPiece(ctx,R,x,y,s){
+  ctx.save();ctx.translate(x,y);ctx.rotate(R()*7);shadow(ctx,1);ctx.beginPath();
+  for(let i=0;i<8;i++){const a=i/8*Math.PI*2,r=s*(.75+R()*.35);ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r*.8)}
+  ctx.closePath();const g=ctx.createRadialGradient(-s*.3,-s*.3,1,0,0,s*1.2);g.addColorStop(0,"#e9b06a");g.addColorStop(1,"#a8591f");ctx.fillStyle=g;ctx.fill();shadow(ctx,0);
+  for(let i=0;i<4;i++)blob(ctx,(R()-.5)*s,(R()-.5)*s*.8,s*.12,"rgba(90,40,10,.35)");ctx.restore()}
+function pepperStrip(ctx,R,x,y,s){ctx.save();ctx.translate(x,y);ctx.rotate(R()*7);shadow(ctx,1);ctx.beginPath();ctx.roundRect(-s,-s*.16,s*2,s*.32,s*.16);ctx.fillStyle="#e8261c";ctx.fill();shadow(ctx,0);ctx.fillStyle="rgba(255,255,255,.35)";ctx.fillRect(-s*.8,-s*.1,s*1.4,s*.06);ctx.restore()}
+function pea(ctx,x,y,s){const g=ctx.createRadialGradient(x-s*.3,y-s*.3,0,x,y,s);g.addColorStop(0,"#b6e36a");g.addColorStop(1,"#4c8f22");ctx.beginPath();ctx.arc(x,y,s,0,7);ctx.fillStyle=g;ctx.fill()}
+
+/* big paella pan, drawn once */
+function drawPaella(ctx,cx,cy,R0,seed,detail=1){
+  const R=rng(seed);const pan=R0, food=R0*.86;
+  // handles
+  ctx.fillStyle="#2a2a2e";for(const a of [0,Math.PI]){ctx.save();ctx.translate(cx,cy);ctx.rotate(a);ctx.beginPath();ctx.ellipse(pan*1.06,0,pan*.12,pan*.07,0,0,7);ctx.lineWidth=pan*.035;ctx.strokeStyle="#2b2b30";ctx.stroke();ctx.restore()}
+  // pan rim
+  let g=ctx.createRadialGradient(cx-pan*.3,cy-pan*.3,pan*.2,cx,cy,pan);g.addColorStop(0,"#5b5b62");g.addColorStop(.8,"#2e2e33");g.addColorStop(1,"#151518");
+  ctx.beginPath();ctx.arc(cx,cy,pan,0,7);ctx.fillStyle=g;ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,pan*.94,0,7);ctx.fillStyle="#3c3a3a";ctx.fill();
+  // rice base
+  g=ctx.createRadialGradient(cx,cy,food*.1,cx,cy,food);g.addColorStop(0,"#f5b545");g.addColorStop(.75,"#e99a2c");g.addColorStop(.95,"#b86418");g.addColorStop(1,"#7a3c0d");
+  ctx.beginPath();ctx.arc(cx,cy,food,0,7);ctx.fillStyle=g;ctx.fill();
+  grains(ctx,R,cx,cy,food*.97,Math.round(5200*detail),["#ffcf6a","#f7b443","#eea235","#f9c25b","#e38d27","#ffd98a"],food*.03);
+  // socarrat ring
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,food,0,7);ctx.arc(cx,cy,food*.9,0,7,true);ctx.fillStyle="rgba(110,50,8,.35)";ctx.fill();ctx.restore();
+  for(let i=0;i<40*detail;i++){const[x,y]=inCircle(R,food*.9);pea(ctx,cx+x,cy+y,food*.022)}
+  for(let i=0;i<14;i++){const[x,y]=inCircle(R,food*.8);pepperStrip(ctx,R,cx+x,cy+y,food*.07)}
+  for(let i=0;i<9;i++){const[x,y]=inCircle(R,food*.7);chickenPiece(ctx,R,cx+x,cy+y,food*.07)}
+  for(let i=0;i<10;i++){const a=i/10*Math.PI*2+.3,d=food*.72;mussel(ctx,cx+Math.cos(a)*d,cy+Math.sin(a)*d,food*.085,a+Math.PI/2)}
+  for(let i=0;i<7;i++){const a=i/7*Math.PI*2,d=food*.42;prawn(ctx,cx+Math.cos(a)*d,cy+Math.sin(a)*d,food*.085,a+1.2)}
+  for(let i=0;i<4;i++){const a=i/4*Math.PI*2+.8,d=food*.15;lemon(ctx,cx+Math.cos(a)*d,cy+Math.sin(a)*d,food*.11,a)}
+  // parsley
+  for(let i=0;i<120*detail;i++){const[x,y]=inCircle(R,food*.9);blob(ctx,cx+x,cy+y,food*.008,"#3f8a2a",R()*7,1,.6)}
+  // sheen
+  g=ctx.createRadialGradient(cx-pan*.4,cy-pan*.45,0,cx-pan*.4,cy-pan*.45,pan*.8);g.addColorStop(0,"rgba(255,255,255,.18)");g.addColorStop(1,"rgba(255,255,255,0)");
+  ctx.beginPath();ctx.arc(cx,cy,pan,0,7);ctx.fillStyle=g;ctx.fill();
+}
+
+/* hero spin */
+(function(){
+  const cv=document.getElementById("paella");const dpr=Math.min(2,window.devicePixelRatio||1);
+  const S=900;const off=document.createElement("canvas");off.width=off.height=S;
+  drawPaella(off.getContext("2d"),S/2,S/2,S*.43,7,1);
+  const ctx=cv.getContext("2d");let size=0;
+  function fit(){const w=cv.clientWidth;if(w!==size){size=w;cv.width=cv.height=w*dpr}}
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;let ang=0,last=0;
+  function frame(t){fit();const dt=last?Math.min(50,t-last):16;last=t;if(!reduce)ang+=dt*0.00012;
+    const w=cv.width;ctx.clearRect(0,0,w,w);ctx.save();ctx.translate(w/2,w/2);
+    ctx.beginPath();ctx.ellipse(w*.02,w*.04,w*.47,w*.47,0,0,7);ctx.fillStyle="rgba(120,40,0,.18)";ctx.filter="blur("+(w*.02)+"px)";ctx.fill();ctx.filter="none";
+    ctx.rotate(ang);ctx.drawImage(off,-w/2,-w/2,w,w);ctx.restore();
+    if(!reduce)requestAnimationFrame(frame)}
+  requestAnimationFrame(frame);addEventListener("resize",()=>{if(reduce)requestAnimationFrame(frame)});
+})();
+
+/* dish illustrations */
+function plate(ctx,cx,cy,r,col="#fffaf3",rim="#eadccd"){shadow(ctx,1);ctx.shadowBlur=18;ctx.beginPath();ctx.arc(cx,cy,r,0,7);ctx.fillStyle=rim;ctx.fill();shadow(ctx,0);ctx.beginPath();ctx.arc(cx,cy,r*.93,0,7);ctx.fillStyle=col;ctx.fill();ctx.beginPath();ctx.arc(cx,cy,r*.72,0,7);ctx.fillStyle="rgba(0,0,0,.03)";ctx.fill()}
+function bowl(ctx,cx,cy,r,col){shadow(ctx,1);ctx.shadowBlur=18;ctx.beginPath();ctx.arc(cx,cy,r,0,7);ctx.fillStyle=col;ctx.fill();shadow(ctx,0);ctx.beginPath();ctx.arc(cx,cy,r*.86,0,7);ctx.fillStyle="rgba(0,0,0,.12)";ctx.fill()}
+function cube(ctx,R,x,y,s,col){ctx.save();ctx.translate(x,y);ctx.rotate(R()*7);shadow(ctx,1);ctx.shadowBlur=3;ctx.fillStyle=col;ctx.beginPath();ctx.roundRect(-s/2,-s/2,s,s,s*.2);ctx.fill();shadow(ctx,0);ctx.fillStyle="rgba(255,255,255,.3)";ctx.fillRect(-s*.35,-s*.35,s*.4,s*.15);ctx.restore()}
+function chickpea(ctx,x,y,s){const g=ctx.createRadialGradient(x-s*.3,y-s*.3,0,x,y,s);g.addColorStop(0,"#f6dca0");g.addColorStop(1,"#c99a52");ctx.beginPath();ctx.arc(x,y,s,0,7);ctx.fillStyle=g;ctx.fill();ctx.strokeStyle="rgba(120,80,30,.4)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(x+s*.2,y-s*.1,s*.5,1,2.6);ctx.stroke()}
+
+const ART={
+ soup(ctx,w,h,R){const cx=w/2,cy=h/2,r=h*.4;bowl(ctx,cx,cy,r,"#c8562f");
+   const g=ctx.createRadialGradient(cx-r*.2,cy-r*.2,0,cx,cy,r*.85);g.addColorStop(0,"#f2a24d");g.addColorStop(1,"#c7651f");ctx.beginPath();ctx.arc(cx,cy,r*.84,0,7);ctx.fillStyle=g;ctx.fill();
+   for(let i=0;i<22;i++){const[x,y]=inCircle(R,r*.72);cube(ctx,R,cx+x,cy+y,r*.11,"#ff8a2a")}
+   for(let i=0;i<14;i++){const[x,y]=inCircle(R,r*.72);cube(ctx,R,cx+x,cy+y,r*.09,"#9fcf5a")}
+   for(let i=0;i<18;i++){const[x,y]=inCircle(R,r*.72);pea(ctx,cx+x,cy+y,r*.04)}
+   for(let i=0;i<10;i++){const[x,y]=inCircle(R,r*.72);cube(ctx,R,cx+x,cy+y,r*.1,"#f3e3b8")}
+   for(let i=0;i<30;i++){const[x,y]=inCircle(R,r*.75);blob(ctx,cx+x,cy+y,r*.012,"#2f6b1e")}},
+ paella(ctx,w,h){drawPaella(ctx,w/2,h/2,h*.42,3,.35)},
+ chicken(ctx,w,h,R){const cx=w/2,cy=h/2,r=h*.42;plate(ctx,cx,cy,r);
+   grains(ctx,R,cx,cy,r*.62,1400,["#ffd45a","#f6c13e","#ffe38a","#f0b230"],r*.035);
+   for(let i=0;i<6;i++){const[x,y]=inCircle(R,r*.45);chickenPiece(ctx,R,cx+x,cy+y,r*.12)}
+   for(let i=0;i<20;i++){const[x,y]=inCircle(R,r*.55);pea(ctx,cx+x,cy+y,r*.035)}
+   for(let i=0;i<6;i++){const[x,y]=inCircle(R,r*.5);pepperStrip(ctx,R,cx+x,cy+y,r*.1)}},
+ burger(ctx,w,h,R){const cx=w/2,cy=h/2,r=h*.44;plate(ctx,cx,cy,r);
+   // wedges
+   for(let i=0;i<7;i++){const a=-.9+i*.3,x=cx+r*.18+Math.cos(a)*r*.5,y=cy+Math.sin(a)*r*.5;ctx.save();ctx.translate(x,y);ctx.rotate(a+1.6);shadow(ctx,1);ctx.beginPath();ctx.moveTo(-r*.22,0);ctx.quadraticCurveTo(0,-r*.14,r*.22,0);ctx.closePath();ctx.fillStyle="#f07a22";ctx.fill();shadow(ctx,0);ctx.strokeStyle="#9b3f12";ctx.lineWidth=r*.025;ctx.beginPath();ctx.moveTo(-r*.21,0);ctx.lineTo(r*.21,0);ctx.stroke();for(let k=0;k<4;k++)blob(ctx,(R()-.5)*r*.25,-r*.04,r*.008,"#3f6b25");ctx.restore()}
+   // burger side view
+   const bx=cx-r*.28,by=cy;shadow(ctx,1);ctx.fillStyle="#e3a253";ctx.beginPath();ctx.roundRect(bx-r*.32,by+r*.12,r*.64,r*.12,r*.05);ctx.fill();shadow(ctx,0);
+   ctx.fillStyle="#4c2715";ctx.beginPath();ctx.roundRect(bx-r*.34,by,r*.68,r*.13,r*.06);ctx.fill();
+   for(let i=0;i<8;i++){ctx.strokeStyle="#2a120a";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(bx-r*.3+i*r*.08,by+r*.02);ctx.lineTo(bx-r*.27+i*r*.08,by+r*.11);ctx.stroke()}
+   ctx.fillStyle="#e33b26";ctx.fillRect(bx-r*.33,by-r*.045,r*.66,r*.05);
+   ctx.fillStyle="#7cc144";ctx.beginPath();ctx.moveTo(bx-r*.38,by-r*.02);for(let i=0;i<=10;i++)ctx.lineTo(bx-r*.38+i*r*.076,by-r*.02+(i%2?r*.05:-r*.01));ctx.lineTo(bx+r*.38,by-r*.06);ctx.lineTo(bx-r*.38,by-r*.06);ctx.fill();
+   const g=ctx.createLinearGradient(0,by-r*.4,0,by-r*.05);g.addColorStop(0,"#f3b75e");g.addColorStop(1,"#c97a2c");ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(bx-r*.34,by-r*.06);ctx.quadraticCurveTo(bx-r*.34,by-r*.42,bx,by-r*.42);ctx.quadraticCurveTo(bx+r*.34,by-r*.42,bx+r*.34,by-r*.06);ctx.closePath();ctx.fill();
+   for(let i=0;i<14;i++){const x=bx+(R()-.5)*r*.5,y=by-r*.3+(R()-.5)*r*.14;blob(ctx,x,y,r*.012,"#fff3d6",R()*3,1.6,1)}},
+ kabsa(ctx,w,h,R){const cx=w/2,cy=h/2,r=h*.44;plate(ctx,cx,cy,r,"#fff6ea");
+   grains(ctx,R,cx,cy,r*.66,1500,["#e9923f","#d97a2e","#f2a85a","#c86a24","#f6bc77"],r*.04);
+   // chicken leg
+   ctx.save();ctx.translate(cx,cy-r*.05);ctx.rotate(-.5);shadow(ctx,1);ctx.shadowBlur=10;const g=ctx.createRadialGradient(-r*.1,-r*.1,2,0,0,r*.3);g.addColorStop(0,"#d78a3c");g.addColorStop(1,"#7d3a12");ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(0,0,r*.26,r*.18,0,0,7);ctx.fill();ctx.fillStyle="#f3e7d2";ctx.beginPath();ctx.roundRect(r*.2,-r*.035,r*.22,r*.07,r*.03);ctx.fill();ctx.beginPath();ctx.arc(r*.43,-r*.03,r*.04,0,7);ctx.arc(r*.43,r*.03,r*.04,0,7);ctx.fill();shadow(ctx,0);ctx.restore();
+   for(let i=0;i<14;i++){const[x,y]=inCircle(R,r*.6);blob(ctx,cx+x,cy+y,r*.035,"#f1d9ab",R()*7,1.6,.8)}
+   for(let i=0;i<14;i++){const[x,y]=inCircle(R,r*.6);blob(ctx,cx+x,cy+y,r*.025,"#4a1d10",R()*7,1.3,.9)}
+   for(let i=0;i<25;i++){const[x,y]=inCircle(R,r*.6);blob(ctx,cx+x,cy+y,r*.01,"#3c7d26",R()*7,1.4,.7)}},
+ couscous(ctx,w,h,R){const cx=w/2,cy=h/2,r=h*.44;plate(ctx,cx,cy,r,"#f6ece0","#c96a3a");
+   for(let i=0;i<4500;i++){const[x,y]=inCircle(R,r*.75);ctx.fillStyle=["#f4d48a","#e9c271","#f8e0a6","#ddb460"][(R()*4)|0];ctx.fillRect(cx+x,cy+y,2,2)}
+   for(let i=0;i<7;i++){const a=i/7*Math.PI*2;ctx.save();ctx.translate(cx+Math.cos(a)*r*.32,cy+Math.sin(a)*r*.32);ctx.rotate(a);shadow(ctx,1);ctx.fillStyle="#f27a1f";ctx.beginPath();ctx.roundRect(-r*.04,-r*.2,r*.08,r*.4,r*.04);ctx.fill();ctx.restore();
+     ctx.save();ctx.translate(cx+Math.cos(a+.45)*r*.4,cy+Math.sin(a+.45)*r*.4);ctx.rotate(a+.45);ctx.fillStyle="#3d7e2b";ctx.beginPath();ctx.roundRect(-r*.05,-r*.16,r*.1,r*.32,r*.05);ctx.fill();ctx.fillStyle="#cfe39c";ctx.fillRect(-r*.025,-r*.13,r*.05,r*.26);shadow(ctx,0);ctx.restore()}
+   for(let i=0;i<22;i++){const[x,y]=inCircle(R,r*.6);chickpea(ctx,cx+x,cy+y,r*.04)}
+   for(let i=0;i<5;i++){const[x,y]=inCircle(R,r*.2);cube(ctx,R,cx+x,cy+y,r*.1,"#f4ead0")}},
+ mashawi(ctx,w,h,R){const cx=w/2,cy=h/2,r=h*.44;plate(ctx,cx,cy,r,"#f3eadf","#9a8a7c");
+   for(let k=0;k<3;k++){const yy=cy+(k-1)*r*.38;ctx.save();ctx.translate(cx,yy);ctx.rotate(-.18+k*.08);
+     ctx.strokeStyle="#9da3aa";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-r*.8,0);ctx.lineTo(r*.8,0);ctx.stroke();
+     const seq=["m","p","m","o","m","p","m"];seq.forEach((t,i)=>{const x=-r*.6+i*r*.2;shadow(ctx,1);
+       if(t==="m"){const g=ctx.createRadialGradient(x-4,-4,2,x,0,r*.12);g.addColorStop(0,"#b0602e");g.addColorStop(1,"#4f220e");ctx.fillStyle=g;ctx.beginPath();ctx.roundRect(x-r*.09,-r*.1,r*.18,r*.2,r*.05);ctx.fill();shadow(ctx,0);ctx.strokeStyle="rgba(20,8,2,.7)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-r*.06,-r*.07);ctx.lineTo(x+r*.06,r*.07);ctx.stroke()}
+       else if(t==="p"){ctx.fillStyle=k%2?"#3e8c2c":"#e8261c";ctx.beginPath();ctx.roundRect(x-r*.07,-r*.09,r*.14,r*.18,r*.04);ctx.fill()}
+       else{ctx.fillStyle="#efe3e8";ctx.beginPath();ctx.roundRect(x-r*.06,-r*.08,r*.12,r*.16,r*.04);ctx.fill();shadow(ctx,0);ctx.strokeStyle="#c9a3b8";ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x-r*.02,-r*.07);ctx.lineTo(x-r*.02,r*.07);ctx.stroke()}
+       shadow(ctx,0)});ctx.restore()}
+   for(let i=0;i<4;i++)lemon(ctx,cx+r*.62,cy-r*.5+i*r*.08,r*.1,1.2)},
+ hummus(ctx,w,h,R){const cx=w/2,cy=h/2,r=h*.42;plate(ctx,cx,cy,r,"#e6ddd0","#3e5a7a");
+   const g=ctx.createRadialGradient(cx-r*.2,cy-r*.2,0,cx,cy,r*.85);g.addColorStop(0,"#f6e6c4");g.addColorStop(1,"#d9bd8a");ctx.beginPath();ctx.arc(cx,cy,r*.82,0,7);ctx.fillStyle=g;ctx.fill();
+   ctx.strokeStyle="rgba(150,110,60,.35)";ctx.lineWidth=r*.05;for(let i=1;i<4;i++){ctx.beginPath();ctx.arc(cx,cy,r*.18*i,i,i+4.5);ctx.stroke()}
+   ctx.beginPath();ctx.arc(cx,cy,r*.38,0,7);ctx.fillStyle="rgba(196,160,30,.45)";ctx.fill();
+   for(let i=0;i<10;i++){const[x,y]=inCircle(R,r*.3);chickpea(ctx,cx+x,cy+y,r*.05)}
+   for(let i=0;i<70;i++){const[x,y]=inCircle(R,r*.7);blob(ctx,cx+x,cy+y,r*.012,"#c8321a")}
+   for(let i=0;i<20;i++){const[x,y]=inCircle(R,r*.7);blob(ctx,cx+x,cy+y,r*.014,"#3d7c25",R()*7,1.5,.7)}},
+ tabbouleh(ctx,w,h,R){const cx=w/2,cy=h/2,r=h*.44;plate(ctx,cx,cy,r);
+   for(let i=0;i<900;i++){const[x,y]=inCircle(R,r*.72);blob(ctx,cx+x,cy+y,r*(.012+R()*.016),["#2f7d24","#3e9530","#57ad3a","#24661b"][(R()*4)|0],R()*7,1.6,.7)}
+   for(let i=0;i<300;i++){const[x,y]=inCircle(R,r*.7);ctx.fillStyle="#e7cf98";ctx.fillRect(cx+x,cy+y,2.5,2.5)}
+   for(let i=0;i<28;i++){const[x,y]=inCircle(R,r*.65);cube(ctx,R,cx+x,cy+y,r*.07,"#e4281c")}
+   for(let i=0;i<8;i++){const[x,y]=inCircle(R,r*.6);blob(ctx,cx+x,cy+y,r*.03,"#e9f0d2",R()*7,1.4,.6)}
+   lemon(ctx,cx+r*.5,cy+r*.5,r*.18,-.6);
+   for(let i=0;i<4;i++){ctx.save();ctx.translate(cx-r*.55+i*r*.07,cy-r*.5);ctx.rotate(.4*i);ctx.fillStyle="#4b9b37";ctx.beginPath();ctx.ellipse(0,0,r*.07,r*.035,0,0,7);ctx.fill();ctx.restore()}}
+};
+
+const grid=document.getElementById("menuGrid");
+DISHES.forEach((d,i)=>{const el=document.createElement("article");el.className="dish";
+  el.innerHTML=`<canvas width="640" height="480" aria-label="Illustration of ${d.name}" role="img"></canvas><div class="txt"><h3>${d.name}</h3><p>${d.desc}</p><div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div><button type="button" data-add="${d.id}">+ Add to order</button></div>`;
+  grid.appendChild(el);const cv=el.querySelector("canvas");
+  const draw=()=>{if(cv.dataset.drawn)return;cv.dataset.drawn=1;ART[d.id](cv.getContext("2d"),640,480,rng(i*97+11))};
+  if(d.photo){const img=document.createElement("img");img.className="photo";img.alt=d.name;img.loading="lazy";img.referrerPolicy="no-referrer";
+    img.onload=()=>{cv.replaceWith(img)};img.onerror=draw;img.src=d.photo;
+    setTimeout(()=>{if(!img.complete||!img.naturalWidth)draw()},2500)}
+  else draw()});
+
+/* order form */
+const qty={};DISHES.forEach(d=>qty[d.id]=0);
+const rows=document.getElementById("rows");
+DISHES.forEach(d=>{const r=document.createElement("div");r.className="row";r.id="row-"+d.id;
+  r.innerHTML=`<span>${d.name}</span><div class="step"><button type="button" aria-label="Fewer portions of ${d.name}" data-d="${d.id}" data-v="-1">−</button><output id="q-${d.id}">0</output><button type="button" aria-label="More portions of ${d.name}" data-d="${d.id}" data-v="1">+</button></div>`;rows.appendChild(r)});
+function setQ(id,v){qty[id]=Math.max(0,Math.min(20,v));document.getElementById("q-"+id).textContent=qty[id];document.getElementById("row-"+id).classList.toggle("on",qty[id]>0);
+  document.getElementById("total").textContent=Object.values(qty).reduce((a,b)=>a+b,0)}
+rows.addEventListener("click",e=>{const b=e.target.closest("button[data-d]");if(b)setQ(b.dataset.d,qty[b.dataset.d]+ +b.dataset.v)});
+grid.addEventListener("click",e=>{const b=e.target.closest("button[data-add]");if(!b)return;setQ(b.dataset.add,qty[b.dataset.add]+1);b.textContent="✓ Added · "+qty[b.dataset.add];});
+
+const dayNames=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];const daysEl=document.getElementById("days");
+dayNames.forEach(n=>{daysEl.insertAdjacentHTML("beforeend",`<label><input type="checkbox" id="day-${n}" value="${n}"> ${n}</label>`)});
+const daysWrap=document.getElementById("daysWrap");
+document.querySelectorAll('input[name="kind"]').forEach(r=>r.addEventListener("change",()=>{daysWrap.hidden=!document.getElementById("kindWeek").checked}));
+document.getElementById("prepBtn").addEventListener("click",()=>{document.getElementById("kindWeek").checked=true;daysWrap.hidden=false});
+
+const form=document.getElementById("orderForm"),err=document.getElementById("err"),sum=document.getElementById("summary");
+form.addEventListener("submit",e=>{e.preventDefault();
+  const v=id=>document.getElementById(id).value.trim();
+  const items=DISHES.filter(d=>qty[d.id]>0);
+  if(!items.length){err.textContent="Add at least one dish and the number of portions.";err.hidden=false;return}
+  if(!v("fName")||(!v("fPhone")&&!v("fEmail"))){err.textContent="Please add your name and a phone number or email so we can confirm.";err.hidden=false;return}
+  err.hidden=true;const kind=document.querySelector('input[name="kind"]:checked').value;
+  const days=[...daysEl.querySelectorAll("input:checked")].map(i=>i.value);
+  let t=`SALT AND PEPPER · Meal request\n\nType: ${kind}\n`;if(kind==="Weekly meal prep"&&days.length)t+=`Days: ${days.join(", ")}\n`;
+  t+=`\nDishes:\n`+items.map(d=>`• ${d.name} × ${qty[d.id]} portion${qty[d.id]>1?"s":""}`).join("\n");
+  t+=`\nTotal portions: ${items.reduce((a,d)=>a+qty[d.id],0)}\n\nName: ${v("fName")}\n`;
+  if(v("fPhone"))t+=`Phone: ${v("fPhone")}\n`;if(v("fEmail"))t+=`Email: ${v("fEmail")}\n`;if(v("fAddr"))t+=`Address: ${v("fAddr")}\n`;if(v("fDate"))t+=`Preferred date: ${v("fDate")}\n`;if(v("fNotes"))t+=`Notes: ${v("fNotes")}\n`;
+  document.getElementById("summaryText").textContent=t;
+  const st=document.getElementById("sendStatus");st.textContent="Sending your request…";
+  sum.hidden=false;sum.scrollIntoView({behavior:"smooth",block:"start"});
+  fetch(ORDER_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify({_subject:"New order – "+v("fName"),_template:"box",_captcha:"false",
+      name:v("fName"),phone:v("fPhone"),email:v("fEmail"),address:v("fAddr"),date:v("fDate"),type:kind,days:days.join(", "),
+      dishes:items.map(d=>`${d.name} x${qty[d.id]}`).join(", "),notes:v("fNotes"),_replyto:v("fEmail")})})
+   .then(r=>{if(!r.ok)throw 0;st.textContent="Sent! We’ll contact you soon to confirm.";st.className="ok"})
+   .catch(()=>{st.textContent="We couldn’t send it automatically. Copy the request and email it to us.";st.className="err"})});
+document.getElementById("copyBtn").addEventListener("click",async e=>{const t=document.getElementById("summaryText");
+  try{await navigator.clipboard.writeText(t.textContent);e.target.textContent="Copied"}catch(_){const s=getSelection(),r=document.createRange();r.selectNodeContents(t);s.removeAllRanges();s.addRange(r);e.target.textContent="Text selected, press Ctrl+C"}});
+document.getElementById("editBtn").addEventListener("click",()=>{sum.hidden=true;document.getElementById("rows").scrollIntoView({behavior:"smooth"})});
+</script>

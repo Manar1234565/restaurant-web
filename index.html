@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Salt and Pepper · Home-cooked food delivery in Dublin</title>
+  <meta name="description" content="Paella, kabsa, mashawi, couscous and healthy bowls, cooked fresh by Manar and Hajar and delivered across Dublin. Weekly meal prep available.">
+  <meta name="theme-color" content="#d81a13">
+
+  <!-- Open Graph: cuando la web tenga dominio, pon la URL completa en og:url y og:image -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Salt and Pepper · Real food, at your door">
+  <meta property="og:description" content="Home-cooked Spanish and Middle Eastern food delivered across Dublin, plus weekly meal prep.">
+  <meta property="og:image" content="assets/img/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='7' y='5' width='8' height='22' rx='4' fill='%23d81a13'/%3E%3Crect x='17' y='5' width='8' height='22' rx='4' fill='%232b1610'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Scripts clásicos con defer (funcionan abriendo el archivo con doble clic). El orden importa. -->
+  <script defer src="js/config.js"></script>
+  <script defer src="js/dishes.js"></script>
+  <script defer src="js/canvas/utils.js"></script>
+  <script defer src="js/canvas/ingredients.js"></script>
+  <script defer src="js/canvas/paella.js"></script>
+  <script defer src="js/canvas/dishes-art.js"></script>
+  <script defer src="js/menu.js"></script>
+  <script defer src="js/order.js"></script>
+  <script defer src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="site-nav" aria-label="Main">
+    <div class="wrap">
+      <a class="logo" href="#top"><span class="logo-mark" aria-hidden="true"><span></span><span></span></span>Salt and Pepper</a>
+      <ul class="navlinks">
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#mealprep">Meal prep</a></li>
+        <li><a href="#order">Order</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <canvas id="paella" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="hero-text">
+        <span class="eyebrow">Home-cooked delivery · Dublin</span>
+        <h1>Real food, <em>at your door.</em></h1>
+        <p>Paella, kabsa, mashawi, couscous and healthy bowls, cooked fresh by Manar and Hajar and delivered across Dublin.</p>
+        <div class="btns">
+          <a class="btn primary" href="#order">Request your meals</a>
+          <a class="btn ghost" href="#mealprep">We also meal prep your week</a>
+        </div>
+        <dl class="facts">
+          <div><dt id="dishCount">9</dt><dd>dishes cooked to order</dd></div>
+          <div><dt>1–20</dt><dd>portions per dish</dd></div>
+          <div><dt>Mon–Fri</dt><dd>weekly prep boxes</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="menu" aria-labelledby="menu-title">
+      <div class="wrap">
+        <div class="head">
+          <h2 id="menu-title">What we cook</h2>
+          <p>Spanish classics and Middle Eastern home cooking. Tap “Add” on any dish and it goes straight into your order.</p>
+        </div>
+        <ul class="menu" id="menuGrid"></ul>
+      </div>
+    </section>
+
+    <section id="mealprep" aria-labelledby="prep-title">
+      <div class="wrap">
+        <div class="prep">
+          <div>
+            <h2 id="prep-title">We also meal prep your week.</h2>
+            <p>Tell us what you like and how many portions you need. We cook on Sunday and deliver labelled, ready-to-heat boxes for the days you choose.</p>
+            <ol class="steps">
+              <li>Pick your dishes and portions in the form below.</li>
+              <li>Choose your delivery days.</li>
+              <li>We confirm by phone or email and cook it fresh.</li>
+            </ol>
+            <a class="btn" href="#order" id="prepBtn">Plan my week</a>
+          </div>
+          <div class="week" aria-hidden="true">
+            <div class="day"><b>Mon</b><div class="box"></div><div class="box b2"></div></div>
+            <div class="day"><b>Tue</b><div class="box b3"></div><div class="box"></div></div>
+            <div class="day"><b>Wed</b><div class="box b2"></div><div class="box b3"></div></div>
+            <div class="day"><b>Thu</b><div class="box"></div><div class="box b2"></div></div>
+            <div class="day"><b>Fri</b><div class="box b3"></div><div class="box"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="order" aria-labelledby="order-title">
+      <div class="wrap">
+        <div class="head">
+          <h2 id="order-title">Request your meals</h2>
+          <p>Choose dishes and portions. We’ll get back to you to confirm the price, time and delivery.</p>
+        </div>
+
+        <form class="order-form" id="orderForm" novalidate>
+          <div class="card">
+            <h3>Dishes &amp; portions</h3>
+            <div class="rows" id="rows"></div>
+            <div class="total"><span>Total portions</span><output id="total">0</output></div>
+          </div>
+
+          <div class="card fields">
+            <h3>Your details</h3>
+
+            <fieldset>
+              <legend>Type of order</legend>
+              <div class="seg">
+                <label><input type="radio" name="kind" id="kindOnce" value="One-off delivery" checked> One-off delivery</label>
+                <label><input type="radio" name="kind" id="kindWeek" value="Weekly meal prep"> Weekly meal prep</label>
+              </div>
+            </fieldset>
+
+            <fieldset id="daysWrap" hidden>
+              <legend>Delivery days</legend>
+              <div class="days" id="days"></div>
+            </fieldset>
+
+            <label class="field" for="fName">Name
+              <input id="fName" name="name" autocomplete="name" placeholder="Your name" required>
+            </label>
+            <label class="field" for="fPhone">Phone
+              <input id="fPhone" name="phone" type="tel" autocomplete="tel" placeholder="08X XXX XXXX">
+            </label>
+            <label class="field" for="fEmail">Email
+              <input id="fEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+            </label>
+            <label class="field" for="fAddr">Address in Dublin
+              <input id="fAddr" name="address" autocomplete="street-address" placeholder="Street, area, Eircode">
+            </label>
+            <label class="field" for="fDate">Preferred date
+              <input id="fDate" name="date" type="date">
+            </label>
+            <label class="field" for="fNotes">Notes
+              <textarea id="fNotes" name="notes" placeholder="Allergies, spice level, halal, no onion…"></textarea>
+            </label>
+
+            <!-- Anti-spam (honeypot): las personas no lo ven; si un bot lo rellena, FormSubmit descarta el envío -->
+            <label class="hp" aria-hidden="true">Leave empty<input id="fHoney" name="_honey" tabindex="-1" autocomplete="off"></label>
+
+            <p class="err" id="err" role="alert" hidden></p>
+            <button class="btn primary" type="submit" id="submitBtn">Send request</button>
+          </div>
+
+          <div class="card summary" id="summary" hidden tabindex="-1">
+            <h3>Your request</h3>
+            <p class="send-status" id="sendStatus" aria-live="polite"></p>
+            <pre id="summaryText"></pre>
+            <div class="btns">
+              <button class="btn primary" type="button" id="copyBtn">Copy request</button>
+              <button class="btn ghost" type="button" id="editBtn">Edit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="contact" aria-labelledby="contact-title">
+      <div class="wrap">
+        <div class="head">
+          <h2 id="contact-title">Contact us</h2>
+          <p>Questions, catering for events or a custom weekly plan. Get in touch with either of us.</p>
+        </div>
+        <div class="contact">
+          <div class="person">
+            <div class="avatar" aria-hidden="true">ME</div>
+            <div><h3>Manar Eddib</h3><p>Co-founder &amp; cook</p><p>esdibmanar@gmail.com</p></div>
+          </div>
+          <div class="person">
+            <div class="avatar" aria-hidden="true">HA</div>
+            <div><h3>Hajar Anouar</h3><p>Co-founder &amp; cook</p></div>
+          </div>
+        </div>
+        <p class="area">Delivering across Dublin. Orders by request.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© <span id="year">2026</span> Salt and Pepper · Dublin</span>
+      <span>Home-cooked food delivery &amp; weekly meal prep</span>
+      <details class="credits">
+        <summary>Photo credits</summary>
+        <ul id="creditsList"></ul>
+      </details>
+    </div>
+  </footer>
+
+  <!-- Avisos para lectores de pantalla (p. ej. "Paella added to your order") -->
+  <div class="visually-hidden" id="announcer" aria-live="polite"></div>
+</body>
+</html>
